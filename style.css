@@ -1,0 +1,478 @@
+/* ===================================================================
+   3D Third-Person Labyrinth Game
+   Style Sheet (style.css)
+   =================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap');
+
+:root {
+  --primary-gold: #f59e0b;
+  --primary-gold-dark: #b45309;
+  --bg-dark: #090d16;
+  --surface-dark: rgba(15, 23, 42, 0.92);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent-red: #ef4444;
+  --accent-blue: #0284c7;
+  --accent-green: #10b981;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #050508;
+  font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+  color: var(--text-main);
+}
+
+/* ================= 3D VIEWPORT CONTAINER ================= */
+#canvasContainer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+#canvasContainer canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ================= UI OVERLAYS ================= */
+.ui-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.interactive {
+  pointer-events: auto;
+}
+
+/* ================= TOP-LEFT: 2D MINIMAP WITH FOG OF WAR ================= */
+.minimap-panel {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.minimap-wrapper {
+  position: relative;
+  width: 175px;
+  height: 175px;
+  background: #090d16;
+  border: 3px solid var(--primary-gold);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7), inset 0 0 12px rgba(0, 0, 0, 0.8);
+}
+
+#minimapCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.minimap-hud {
+  position: absolute;
+  bottom: 6px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fbbf24;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,0.75));
+}
+
+.minimap-title {
+  background: var(--surface-dark);
+  backdrop-filter: blur(6px);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.minimap-title .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
+}
+
+/* ================= TOP-RIGHT: CONTROLS & HEADER ================= */
+.top-controls {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+.icon-btn {
+  background: var(--surface-dark);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(245, 158, 11, 0.4);
+  color: var(--text-main);
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.icon-btn:hover {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: var(--primary-gold);
+  transform: translateY(-2px);
+}
+
+/* ================= TOP CENTER: GAME TITLE ================= */
+.game-header {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  background: var(--surface-dark);
+  backdrop-filter: blur(8px);
+  padding: 8px 24px;
+  border-radius: 999px;
+  border: 2px solid rgba(245, 158, 11, 0.35);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.game-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fbbf24;
+  letter-spacing: 0.5px;
+}
+
+.game-subtitle {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+}
+
+/* ================= TOP/CENTER NOTIFICATION TOAST ================= */
+.toast-popup {
+  position: absolute;
+  top: 76px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: rgba(220, 38, 38, 0.95);
+  backdrop-filter: blur(10px);
+  color: #ffffff;
+  padding: 12px 28px;
+  border-radius: 999px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  border: 2px solid #fca5a5;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(239, 68, 68, 0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toast-popup.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ================= BOTTOM CENTER: STATUS & DOOR INTERACT BUTTON ================= */
+.bottom-center-container {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 90%;
+  max-width: 540px;
+  pointer-events: none;
+}
+
+/* Interaction Button (Only shown when standing near the door) */
+.door-interact-btn {
+  background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+  color: white;
+  border: 3px solid #fecaca;
+  padding: 12px 32px;
+  border-radius: 999px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.6);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: pulse-door-btn 1.4s infinite alternate;
+}
+
+.door-interact-btn.hidden {
+  display: none;
+}
+
+.door-interact-btn:hover {
+  transform: scale(1.06) translateY(-2px);
+  background: linear-gradient(135deg, #f87171 0%, #dc2626 100%);
+  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.8);
+}
+
+.door-interact-btn:active {
+  transform: scale(0.96);
+}
+
+@keyframes pulse-door-btn {
+  0% { box-shadow: 0 0 12px rgba(239, 68, 68, 0.5); }
+  100% { box-shadow: 0 0 25px rgba(239, 68, 68, 0.9); }
+}
+
+.status-banner {
+  background: var(--surface-dark);
+  backdrop-filter: blur(8px);
+  padding: 10px 22px;
+  border-radius: 16px;
+  border-left: 5px solid var(--primary-gold);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  text-align: center;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.status-banner.running {
+  border-left-color: var(--accent-blue);
+  background: rgba(14, 116, 144, 0.92);
+  color: #f0fdf4;
+}
+
+.status-banner.decision {
+  border-left-color: var(--primary-gold);
+  background: rgba(180, 83, 9, 0.92);
+  color: #fef08a;
+}
+
+.status-banner.door-near {
+  border-left-color: var(--accent-red);
+  background: rgba(185, 28, 28, 0.92);
+  color: #ffffff;
+}
+
+/* ================= BOTTOM-LEFT: D-PAD CONTROLLER ================= */
+.dpad-wrapper {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  z-index: 50;
+  transition: opacity 0.25s, transform 0.25s;
+}
+
+.dpad-wrapper.hidden {
+  opacity: 0.35;
+  pointer-events: none;
+  filter: grayscale(0.6);
+}
+
+.dpad-container {
+  display: grid;
+  grid-template-columns: 54px 54px 54px;
+  grid-template-rows: 54px 54px 54px;
+  gap: 6px;
+  padding: 10px;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(10px);
+  border-radius: 26px;
+  border: 3px solid var(--primary-gold);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7), 0 0 18px rgba(245, 158, 11, 0.25);
+}
+
+.dpad-btn {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #f8fafc;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  border-radius: 14px;
+  font-size: 1.4rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.dpad-btn span.label {
+  font-size: 0.6rem;
+  font-weight: 800;
+  margin-top: 1px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dpad-btn.up {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.dpad-btn.left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.dpad-center {
+  grid-column: 2;
+  grid-row: 2;
+  background: radial-gradient(circle, #334155 0%, #0f172a 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: #fbbf24;
+  border: 2px solid rgba(245, 158, 11, 0.4);
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
+}
+
+.dpad-btn.right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.dpad-btn.down {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.dpad-btn:not(:disabled) {
+  border-color: #38bdf8;
+  color: #38bdf8;
+  background: linear-gradient(135deg, #0369a1 0%, #0f172a 100%);
+  box-shadow: 0 0 12px rgba(2, 132, 199, 0.4);
+}
+
+.dpad-btn:hover:not(:disabled) {
+  transform: scale(1.08);
+  border-color: #f59e0b;
+  color: #fef08a;
+  background: linear-gradient(135deg, #b45309 0%, #78350f 100%);
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.7);
+}
+
+.dpad-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.dpad-btn:disabled {
+  opacity: 0.2;
+  filter: grayscale(1);
+  pointer-events: none;
+  border-color: rgba(255, 255, 255, 0.05);
+  box-shadow: none;
+}
+
+/* ================= LOADING SCREEN ================= */
+#loadingScreen {
+  position: fixed;
+  inset: 0;
+  background: #0f172a;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  transition: opacity 0.5s ease;
+}
+
+.spinner {
+  width: 56px;
+  height: 56px;
+  border: 5px solid rgba(245, 158, 11, 0.2);
+  border-top-color: var(--primary-gold);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fbbf24;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .game-header {
+    display: none;
+  }
+  .minimap-wrapper {
+    width: 140px;
+    height: 140px;
+  }
+  .dpad-container {
+    grid-template-columns: 46px 46px 46px;
+    grid-template-rows: 46px 46px 46px;
+    gap: 4px;
+    padding: 8px;
+  }
+  .dpad-btn {
+    font-size: 1.15rem;
+  }
+  .status-banner {
+    font-size: 0.85rem;
+    padding: 8px 14px;
+  }
+  .door-interact-btn {
+    font-size: 0.95rem;
+    padding: 10px 22px;
+  }
+}
